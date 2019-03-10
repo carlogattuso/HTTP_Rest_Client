@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">HTTP_Rest_Client</string>
+    <string name="action_settings">New Post</string>
+</resources>
