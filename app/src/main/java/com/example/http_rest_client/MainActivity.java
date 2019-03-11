@@ -1,17 +1,23 @@
 package com.example.http_rest_client;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -141,13 +147,31 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            if(postList.size()==0){
-                sendPost( 26,"New Post");
-            }
-            else {
-                sendPost(postList.get(postList.size() - 1).getId() + 1, "New Post");
-                return true;
-            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View view = LayoutInflater.from(this).inflate(R.layout.post_layout, null);
+            final AppCompatEditText input = (AppCompatEditText) view.findViewById(R.id.editText);
+            builder.setView(view);
+            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(MainActivity.this, "Cancelled" + input.getText().toString(),
+                            Toast.LENGTH_LONG).show();
+                    dialog.cancel();
+                }
+            });
+
+            builder.setPositiveButton("POST", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    if(postList.size()==0){
+
+                    }
+
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

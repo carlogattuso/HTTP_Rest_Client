@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">HTTP_Rest_Client</string>
     <string name="action_settings">New Post</string>
+    <string name="new_post_title">NEW POST</string>
+    <string name="title_small">TITLE</string>
+    <string name="id_reference">ID:</string>
 </resources>
