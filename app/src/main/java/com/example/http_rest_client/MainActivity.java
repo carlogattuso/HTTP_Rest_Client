@@ -147,33 +147,79 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             View view = LayoutInflater.from(this).inflate(R.layout.post_layout, null);
             final AppCompatEditText input = (AppCompatEditText) view.findViewById(R.id.editText);
+            final TextView id_text = (TextView) view.findViewById(R.id.text_id);
+            if (postList.size() == 0) {
+                id_text.append(" ");
+                id_text.append(String.valueOf(26));
+            }
+            else {
+                id_text.append(" ");
+                id_text.append(String.valueOf(postList.get(postList.size()-1).getId()+1));
+            }
             builder.setView(view);
-            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
+            builder.setPositiveButton("POST",
+                    new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+            builder.setNegativeButton("CANCEL",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+
+            final AlertDialog dialog = builder.create();
+            dialog.show();
+
+            //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    Boolean wantToCloseDialog = false;
+
+                    //Do stuff, possibly set wantToCloseDialog to true then...
+                    String title = input.getText().toString();
+                    if(title.equals("")) {
+                        Toast.makeText(MainActivity.this, "Empty title" + input.getText().toString(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        if (postList.size() == 0) {
+                            sendPost(26, input.getText().toString());
+                            wantToCloseDialog=true;
+                        }
+                        else {
+                            sendPost(postList.get(postList.size()-1).getId()+1, input.getText().toString());
+                            wantToCloseDialog=true;
+                        }
+                    }
+                    if(wantToCloseDialog)
+                        dialog.dismiss();
+                }
+            });
+
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
                     Toast.makeText(MainActivity.this, "Cancelled" + input.getText().toString(),
                             Toast.LENGTH_LONG).show();
-                    dialog.cancel();
+                    dialog.dismiss();
                 }
             });
-
-            builder.setPositiveButton("POST", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    if(postList.size()==0){
-
-                    }
-
-                }
-            });
-
-            AlertDialog alert = builder.create();
-            alert.show();
 
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

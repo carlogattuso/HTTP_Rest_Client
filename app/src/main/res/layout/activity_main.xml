@@ -27,19 +27,18 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/my_recycler_view"
-            android:layout_width="388dp"
-            android:layout_height="593dp"
+            android:layout_width="394dp"
+            android:layout_height="510dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.428"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
@@ -47,16 +46,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            android:layout_marginStart="339dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            app:layout_constraintVertical_bias="1.0"
             app:srcCompat="@android:drawable/ic_dialog_email" />
 
     </android.support.constraint.ConstraintLayout>
