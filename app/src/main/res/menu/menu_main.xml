@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.http_rest_client.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/new_post"
         android:orderInCategory="100"
         android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/modify_post"
+        android:orderInCategory="100"
+        android:title="@string/modify_button"
         app:showAsAction="never" />
 </menu>

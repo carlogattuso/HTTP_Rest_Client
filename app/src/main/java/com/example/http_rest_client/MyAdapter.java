@@ -3,6 +3,10 @@ package com.example.http_rest_client;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +25,9 @@ import retrofit2.internal.EverythingIsNonNull;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
-    MainActivity m = new MainActivity();
+    private JSON_API api;
     private List<Post> values;
 
-    private JSON_API api;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -35,13 +38,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public TextView id;
         public View layout;
         public Button delete;
+        public  Button image;
 
         public ViewHolder(View v) {
             super(v);
             layout = v;
             title = (TextView) v.findViewById(R.id.firstLine);
             id = (TextView) v.findViewById(R.id.secondLine);
-            delete = (Button) v.findViewById(R.id.button);
+            delete = (Button) v.findViewById(R.id.delete);
         }
     }
 
@@ -71,62 +75,54 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 inflater.inflate(R.layout.row_layout, parent, false);
         // set the view's size, margins, paddings and layout parameters
         ViewHolder vh = new ViewHolder(v);
-        return vh;
-    }
 
-    // Replace the contents of a view (invoked by the layout manager)
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://my-json-server.typicode.com/eperezcosano/JSON-server/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         api = retrofit.create(JSON_API.class);
+
+        return vh;
+    }
+
+    // Replace the contents of a view (invoked by the layout manager)
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         final Post post = values.get(position);
         holder.title.setText(post.getTitle());
-        holder.id.setText("Id: " + post.getId());
-        holder.layout.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updatePost(post.getId(),post.getId(),post.getTitle());
-            }
-        });
+        holder.id.setText(String.valueOf("Id: " + post.getId()));
         holder.delete.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                remove(holder.getAdapterPosition());
+                deletePost(post.getId(),holder.getAdapterPosition());
             }
         });
     }
 
-    public void updatePost(int id_path, final int id, final String title) {
-        Call<Post> call = api.updatePost(id_path,id,title);
+    public void deletePost(final int id, final int position_to_remove) {
+        Call<Void> call = api.deletePost(id);
 
-        call.enqueue(new Callback<Post>() {
+        call.enqueue(new Callback<Void>() {
             @EverythingIsNonNull
             @Override
-            public void onResponse(Call<Post> call, Response<Post> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
 
                 if(!response.isSuccessful()) {
                     return;
                 }
 
-                for(Post p : values){
-                    if(p.getId()==id){
-                        p.setTitle("Post Modified");
-                    }
-                }
-                notifyDataSetChanged();
+                remove(position_to_remove);
             }
             @EverythingIsNonNull
             @Override
-            public void onFailure(Call<Post> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
 
             }
         });
     }
+
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {

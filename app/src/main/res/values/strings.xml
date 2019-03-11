@@ -4,4 +4,6 @@
     <string name="new_post_title">NEW POST</string>
     <string name="title_small">TITLE</string>
     <string name="id_reference">ID:</string>
+    <string name="modify_button">Modify post</string>
+    <string name="modify_post_title">MODIFY POST</string>
 </resources>

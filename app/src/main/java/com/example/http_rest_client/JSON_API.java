@@ -28,6 +28,6 @@ public interface JSON_API {
                           @Field("title") String title);
 
     @DELETE("posts/{id}")
-    Call<Post> deletePost(@Path("id") int id);
+    Call<Void> deletePost(@Path("id") int id);
 
 }
