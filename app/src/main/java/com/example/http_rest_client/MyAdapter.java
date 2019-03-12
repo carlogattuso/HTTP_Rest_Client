@@ -3,8 +3,11 @@ package com.example.http_rest_client;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
@@ -25,8 +28,8 @@ import retrofit2.internal.EverythingIsNonNull;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
-    private JSON_API api;
-    private List<Post> values;
+    private List<Track> values;
+    Activity activity;
 
 
     // Provide a reference to the views for each data item
@@ -46,10 +49,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             title = (TextView) v.findViewById(R.id.firstLine);
             id = (TextView) v.findViewById(R.id.secondLine);
             delete = (Button) v.findViewById(R.id.delete);
+            image = (Button) v.findViewById(R.id.icon);
         }
     }
 
-    public void add(int position, Post item) {
+    public void add(int position, Track item) {
         values.add(position, item);
         notifyItemInserted(position);
     }
@@ -60,8 +64,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(List<Post> myDataset) {
+    public MyAdapter(List<Track> myDataset, Activity activity) {
         values = myDataset;
+        this.activity = activity;
     }
 
     // Create new views (invoked by the layout manager)
@@ -76,13 +81,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         // set the view's size, margins, paddings and layout parameters
         ViewHolder vh = new ViewHolder(v);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://my-json-server.typicode.com/eperezcosano/JSON-server/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        api = retrofit.create(JSON_API.class);
-
         return vh;
     }
 
@@ -90,18 +88,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        final Post post = values.get(position);
-        holder.title.setText(post.getTitle());
-        holder.id.setText(String.valueOf("Id: " + post.getId()));
-        holder.delete.setOnClickListener(new OnClickListener() {
+        final Track track = values.get(position);
+        holder.title.setText(track.getTitle());
+        holder.id.setText(track.getSinger());
+        holder.image.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                deletePost(post.getId(),holder.getAdapterPosition());
+
+                Intent trackview = new Intent(activity.getApplicationContext(), TrackDetailsActivity.class);
+                trackview.putExtra("identifier",track.getId());
+                trackview.putExtra("title",track.getTitle());
+                trackview.putExtra("singer",track.getSinger());
+                activity.startActivity(trackview);
             }
         });
     }
-
-    public void deletePost(final int id, final int position_to_remove) {
+    /*public void deletePost(final int id, final int position_to_remove) {
         Call<Void> call = api.deletePost(id);
 
         call.enqueue(new Callback<Void>() {
@@ -122,7 +124,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
             }
         });
-    }
+    }*/
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override

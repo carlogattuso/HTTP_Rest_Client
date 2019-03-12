@@ -3,6 +3,7 @@ package com.example.http_rest_client;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.drm.DrmStore;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,11 +39,11 @@ import retrofit2.internal.EverythingIsNonNull;
 
 public class MainActivity extends AppCompatActivity {
 
-    private JSON_API api;
+    private Tracks_API api;
     private RecyclerView.Adapter mAdapter;
     // use a linear layout manager
     private RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-    private List<Post> postList;
+    private List<Track> trackList;
     private RecyclerView recyclerView;
 
     @Override
@@ -50,32 +52,32 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://my-json-server.typicode.com/carlogattuso/json-server/")
+                .baseUrl("http://147.83.7.203:8080/dsaApp/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        api = retrofit.create(JSON_API.class);
+        api = retrofit.create(Tracks_API.class);
 
-        this.getPosts();
-        this.getProfile();
+        this.getTracks();
+        //this.getProfile();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // define an adapter
-                mAdapter = new MyAdapter(postList);
-                recyclerView.setAdapter(mAdapter);
+                //Update posts!!
             }
         });
     }
 
-    public void getProfile(){
+    /*public void getProfile(){
         Call<Profile> call = api.getProfile();
 
         call.enqueue(new Callback<Profile>() {
@@ -110,13 +112,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public void getPosts(){
-        Call<List<Post>> call = api.getPosts();
+    */
 
-        call.enqueue(new Callback<List<Post>>() {
+    public void getTracks(){
+        Call<List<Track>> call = api.getTracks();
+
+        call.enqueue(new Callback<List<Track>>() {
             @EverythingIsNonNull
             @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+            public void onResponse(Call<List<Track>> call, Response<List<Track>> response) {
                 if(!response.isSuccessful())
                 {
                     Toast toast = Toast.makeText(getApplicationContext(),
@@ -124,11 +128,15 @@ public class MainActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT);
                     toast.show();
                 }
-                postList = response.body();
+
+                trackList = response.body();
+
+                mAdapter = new MyAdapter(trackList, MainActivity.this);
+                recyclerView.setAdapter(mAdapter);
             }
             @EverythingIsNonNull
             @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
+            public void onFailure(Call<List<Track>> call, Throwable t) {
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "Unexpected error",
                         Toast.LENGTH_SHORT);
@@ -137,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void sendPost(int id, String title) {
+    /*public void sendPost(int id, String title) {
         Call<Post> call = api.savePost(id,title);
 
         call.enqueue(new Callback<Post>() {
@@ -171,9 +179,9 @@ public class MainActivity extends AppCompatActivity {
                 toast.show();
             }
         });
-    }
+    }*/
 
-    public void updatePost(int id_path, final int id, final String title) {
+    /*public void updatePost(int id_path, final int id, final String title) {
         Call<Post> call = api.updatePost(id_path,id,title);
 
         call.enqueue(new Callback<Post>() {
@@ -203,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -212,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -378,5 +386,5 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 }
