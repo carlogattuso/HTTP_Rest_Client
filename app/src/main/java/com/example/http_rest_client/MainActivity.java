@@ -114,13 +114,14 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+                int size_recycler = mAdapter.getItemCount();
+
                 Post newPost = response.body();
 
                 postList.add(newPost);
 
-                // define an adapter
-                mAdapter = new MyAdapter(postList);
-                recyclerView.setAdapter(mAdapter);
+                recyclerView.getAdapter().notifyItemInserted(postList.size());
+                recyclerView.smoothScrollToPosition(postList.size());
             }
            @EverythingIsNonNull
             @Override
@@ -145,15 +146,17 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                for(Post p : postList){
-                    if(p.getId()==id){
-                        p.setTitle(title);
+                int position = 0;
+
+                for(int i=0;i<postList.size();i++){
+                    if(postList.get(i).getId()==id){
+                        postList.get(i).setTitle(title);
+                        position = i;
                     }
                 }
-
                 // define an adapter
-                mAdapter = new MyAdapter(postList);
-                recyclerView.setAdapter(mAdapter);
+                recyclerView.getAdapter().notifyDataSetChanged();
+                recyclerView.smoothScrollToPosition(position);
             }
             @EverythingIsNonNull
             @Override

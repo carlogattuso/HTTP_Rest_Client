@@ -110,6 +110,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             public void onResponse(Call<Void> call, Response<Void> response) {
 
                 if(!response.isSuccessful()) {
+                    remove(position_to_remove);
                     return;
                 }
 
