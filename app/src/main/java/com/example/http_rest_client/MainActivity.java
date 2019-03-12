@@ -1,6 +1,9 @@
 package com.example.http_rest_client;
 
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.content.DialogInterface;
+import android.drm.DrmStore;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -52,13 +55,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://my-json-server.typicode.com/eperezcosano/JSON-server/")
+                .baseUrl("https://my-json-server.typicode.com/carlogattuso/json-server/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         api = retrofit.create(JSON_API.class);
 
         this.getPosts();
+        this.getProfile();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +75,41 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void getProfile(){
+        Call<Profile> call = api.getProfile();
+
+        call.enqueue(new Callback<Profile>() {
+            @EverythingIsNonNull
+            @Override
+            public void onResponse(Call<Profile> call, Response<Profile> response) {
+                if(!response.isSuccessful())
+                {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            response.code(),
+                            Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+
+                Profile profile = response.body();
+
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        String.valueOf("Welcome "+profile.getName()),
+                        Toast.LENGTH_SHORT);
+                toast.show();
+
+                setTitle(String.valueOf("Welcome "+profile.getName()));
+
+            }
+            @EverythingIsNonNull
+            @Override
+            public void onFailure(Call<Profile> call, Throwable t) {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Unexpected error",
+                        Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+    }
     public void getPosts(){
         Call<List<Post>> call = api.getPosts();
 

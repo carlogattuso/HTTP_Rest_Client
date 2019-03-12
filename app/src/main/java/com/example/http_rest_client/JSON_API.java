@@ -16,6 +16,9 @@ public interface JSON_API {
     @GET("posts")
     Call<List<Post>> getPosts();
 
+    @GET("profile")
+    Call<Profile> getProfile();
+
     @POST("posts")
     @FormUrlEncoded
     Call<Post> savePost(@Field("id") int id,
