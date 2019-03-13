@@ -1,11 +1,12 @@
 <resources>
-    <string name="app_name">HTTP_Rest_Client</string>
+    <string name="app_name">TRACK LIST</string>
+    <string name="app_name_second">VIEW TRACK</string>
     <string name="action_settings">New Post</string>
     <string name="new_post_title">NEW POST</string>
     <string name="view_track_title">View Track</string>
-    <string name="title_small">TITLE</string>
-    <string name="singer">SINGER</string>
-    <string name="id_reference">ID</string>
+    <string name="title_small">Title</string>
+    <string name="singer">Singer</string>
+    <string name="id_reference">Id</string>
     <string name="modify_button">Modify post</string>
     <string name="modify_post_title">MODIFY POST</string>
     <string name="edit_button">Edit</string>

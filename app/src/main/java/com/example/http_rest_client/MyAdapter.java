@@ -48,7 +48,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             layout = v;
             title = (TextView) v.findViewById(R.id.firstLine);
             id = (TextView) v.findViewById(R.id.secondLine);
-            delete = (Button) v.findViewById(R.id.delete);
             image = (Button) v.findViewById(R.id.icon);
         }
     }
