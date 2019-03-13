@@ -2,11 +2,15 @@ package com.example.http_rest_client;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.drm.DrmStore;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -45,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
     private List<Track> trackList;
     private RecyclerView recyclerView;
+    private String id_delete_broadcast;
+    private Boolean changed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Intent track_details = getIntent();
 
         recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -75,6 +83,46 @@ public class MainActivity extends AppCompatActivity {
                 //Update posts!!
             }
         });
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if(extras.getString("id_delete")!=null) {
+                String value = extras.getString("id_delete");
+                AlertDialog myQuittingDialogBox =new AlertDialog.Builder(this)
+                        //set message, title, and icon
+                        .setTitle("Delete")
+                        .setMessage("Are you sure you want to Delete "+value+"?")
+
+                        .setPositiveButton("Delete Track", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                //your deleting code
+                                dialog.dismiss();
+                            }
+
+                        })
+                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                dialog.dismiss();
+
+                            }
+                        })
+                        .create();
+
+                myQuittingDialogBox.create();
+                myQuittingDialogBox.show();
+                //The key argument here must match that used in the other activity
+            }
+            if(extras.getString("id_edit")!=null) {
+                String value = extras.getString("id_edit");
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Vamos a editar "+value,
+                        Toast.LENGTH_SHORT);
+                toast.show();
+                //The key argument here must match that used in the other activity
+            }
+        }
     }
 
     /*public void getProfile(){
@@ -117,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
     public void getTracks(){
         Call<List<Track>> call = api.getTracks();
 
-        call.enqueue(new Callback<List<Track>>() {
+        call.enqueue(new Callback<List<Track>>(){
             @EverythingIsNonNull
             @Override
             public void onResponse(Call<List<Track>> call, Response<List<Track>> response) {
@@ -144,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     /*public void sendPost(int id, String title) {
         Call<Post> call = api.savePost(id,title);
 

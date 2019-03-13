@@ -40,7 +40,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public TextView title;
         public TextView id;
         public View layout;
-        public Button delete;
         public  Button image;
 
         public ViewHolder(View v) {
@@ -102,6 +101,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             }
         });
     }
+
     /*public void deletePost(final int id, final int position_to_remove) {
         Call<Void> call = api.deletePost(id);
 
