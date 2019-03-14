@@ -8,64 +8,67 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/text_id"
+        android:id="@+id/view_track_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_marginStart="16dp"
-        android:text="@string/id_reference"
+        android:text="@string/view_track_id"
         android:textColor="@color/colorPrimary"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/id_field"
+        android:id="@+id/view_track_id_field"
         android:layout_width="376dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="8dp"
+        android:text="@string/view_track_id_field"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/text_title"
+        android:id="@+id/view_track_title"
         android:layout_width="77dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_marginStart="16dp"
-        android:text="@string/title_small"
+        android:text="@string/view_track_title"
         android:textColor="@color/colorPrimary"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/title_field"
+        android:id="@+id/view_track_title_field"
         android:layout_width="376dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="8dp"
+        android:text="@string/view_track_title_field"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/singer_title"
+        android:id="@+id/view_track_singer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_marginStart="16dp"
-        android:text="@string/singer"
+        android:text="@string/view_track_singer"
         android:textColor="@color/colorPrimary"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/singer_field"
+        android:id="@+id/view_track_singer_field"
         android:layout_width="376dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="8dp"
+        android:text="@string/view_track_singer_field"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
         android:textStyle="bold" />

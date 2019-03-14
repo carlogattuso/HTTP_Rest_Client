@@ -44,46 +44,27 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.internal.EverythingIsNonNull;
 
-public class TrackDetailsActivity extends AppCompatActivity {
+public class UpdateTrackActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_track_layout);
+        setContentView(R.layout.put_layout);
 
-        final Intent adapter_intent = getIntent();
+        final Intent track_details_intent = getIntent();
 
-        final String id = adapter_intent.getStringExtra("id");
-        final String title = adapter_intent.getStringExtra("title");
-        final String singer = adapter_intent.getStringExtra("singer");
+        final String id = track_details_intent.getStringExtra("id_edit");
 
-        final Intent intent_main = new Intent(TrackDetailsActivity.this,MainActivity.class);
-        final Intent update_intent = new Intent(TrackDetailsActivity.this,UpdateTrackActivity.class);
+        Button put = (Button) findViewById(R.id.update_track_put);
+        final EditText title = (EditText) findViewById(R.id.update_track_title_field);
+        final EditText singer = (EditText) findViewById(R.id.update_track_singer_field);
 
-        TextView id_text = (TextView) findViewById(R.id.view_track_id_field);
-        TextView title_text = (TextView) findViewById(R.id.view_track_title_field);
-        TextView singer_text = (TextView) findViewById(R.id.view_track_singer_field);
-
-        id_text.setText(id);
-        title_text.setText(title);
-        singer_text.setText(singer);
-
-        Button edit_button = (Button) findViewById(R.id.edit_button);
-        Button delete_button = (Button) findViewById(R.id.delete_button);
-        Button info_button = (Button) findViewById(R.id.info_button);
-
-        delete_button.setOnClickListener(new View.OnClickListener() {
+        put.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent_main.putExtra("id_delete",id);
-                startActivity(intent_main);
-                intent_main.removeExtra("id_delete");
-            }
-        });
-        edit_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                update_intent.putExtra("id_edit",id);
-                startActivity(update_intent);
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Vamos a editar "+id,
+                        Toast.LENGTH_SHORT);
+
             }
         });
     }

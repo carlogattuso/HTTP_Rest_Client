@@ -2,14 +2,31 @@
     <string name="app_name">TRACK LIST</string>
     <string name="app_name_second">VIEW TRACK</string>
     <string name="action_settings">New Post</string>
-    <string name="new_post_title">NEW POST</string>
-    <string name="view_track_title">View Track</string>
-    <string name="title_small">Title</string>
-    <string name="singer">Singer</string>
-    <string name="id_reference">Id</string>
+
+    //New track layout
+    <string name="new_track">New Track</string>
+    <string name="new_track_id">Id</string>
+    <string name="new_track_title">Title</string>
+    <string name="new_track_singer">Singer</string>
+    <string name="new_track_post">POST</string>
+
+    //View details layout
+    <string name="view_track_id">Id</string>
+    <string name="view_track_id_field"></string>
+    <string name="view_track_title">Title</string>
+    <string name="view_track_title_field"></string>
+    <string name="view_track_singer">Singer</string>
+    <string name="view_track_singer_field"></string>
+    <string name="edit_button"></string>
+    <string name="delete_button"></string>
+    <string name="more_info"></string>
+
+    //Update track layout
+    <string name="update_track">Update Track</string>
+    <string name="update_track_title">Title</string>
+    <string name="update_track_singer">Singer</string>
+    <string name="update_track_put">PUT</string>
+
+    //Menu main
     <string name="modify_button">Modify post</string>
-    <string name="modify_post_title">MODIFY POST</string>
-    <string name="edit_button">Edit</string>
-    <string name="delete_button">Delete</string>
-    <string name="more_info">Info</string>
 </resources>

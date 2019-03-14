@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -19,18 +20,13 @@ public interface Tracks_API {
     Call<List<Track>> getTracks();
 
     @POST("tracks")
-    @FormUrlEncoded
-    Call<Track> savePost(@Field("id") String id,
-                        @Field("title") String title,
-                        @Field("singer") String singer);
+    Call<Track> saveTrack(@Body Track track);
 
     @PUT("tracks/{id}")
     @FormUrlEncoded
-    Call<Track> udpdatePost(@Field("id") String id,
-                        @Field("title") String title,
-                        @Field("singer") String singer);
+    Call<Track> updateTrack(@Body Track track);
 
     @DELETE("tracks/{id}")
-    Call<Void> deletePost(@Path("id") String id);
+    Call<Void> deleteTrack(@Path("id") String id);
 
 }

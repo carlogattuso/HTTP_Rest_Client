@@ -50,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
     private List<Track> trackList;
     private RecyclerView recyclerView;
-    private String id_delete_broadcast;
-    private Boolean changed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Intent track_details = getIntent();
 
         recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -81,31 +78,42 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // define an adapter
                 //Update posts!!
+                Intent i = new Intent(MainActivity.this, NewTrackActivity.class);
+                startActivityForResult(i, 1);
             }
         });
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             if(extras.getString("id_delete")!=null) {
-                String value = extras.getString("id_delete");
-                AlertDialog myQuittingDialogBox =new AlertDialog.Builder(this)
+
+                final String value = extras.getString("id_delete");
+                String song_name;
+                String singer_name;
+
+                AlertDialog myQuittingDialogBox = new AlertDialog.Builder(this)
                         //set message, title, and icon
                         .setTitle("Delete")
-                        .setMessage("Are you sure you want to Delete "+value+"?")
+                        .setMessage("Are you sure you want to Delete " + value + "?")
 
                         .setPositiveButton("Delete Track", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 //your deleting code
+                                int position = 0;
+                                for(int i=0;i<trackList.size();i++){
+                                    if(trackList.get(i).getId().equals(value)){
+                                        position = i;
+                                    }
+                                }
+                                deleteTrack(value,position);
                                 dialog.dismiss();
                             }
 
                         })
                         .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-
                                 dialog.dismiss();
-
                             }
                         })
                         .create();
@@ -121,46 +129,11 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT);
                 toast.show();
                 //The key argument here must match that used in the other activity
+                Intent i = new Intent(MainActivity.this, UpdateTrackActivity.class);
+                startActivityForResult(i, 1);
             }
         }
     }
-
-    /*public void getProfile(){
-        Call<Profile> call = api.getProfile();
-
-        call.enqueue(new Callback<Profile>() {
-            @EverythingIsNonNull
-            @Override
-            public void onResponse(Call<Profile> call, Response<Profile> response) {
-                if(!response.isSuccessful())
-                {
-                    Toast toast = Toast.makeText(getApplicationContext(),
-                            response.code(),
-                            Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-
-                Profile profile = response.body();
-
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        String.valueOf("Welcome "+profile.getName()),
-                        Toast.LENGTH_SHORT);
-                toast.show();
-
-                setTitle(String.valueOf("Welcome "+profile.getName()));
-
-            }
-            @EverythingIsNonNull
-            @Override
-            public void onFailure(Call<Profile> call, Throwable t) {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "Unexpected error",
-                        Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        });
-    }
-    */
 
     public void getTracks(){
         Call<List<Track>> call = api.getTracks();
@@ -192,13 +165,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    /*public void sendPost(int id, String title) {
-        Call<Post> call = api.savePost(id,title);
 
-        call.enqueue(new Callback<Post>() {
+    public void saveTrack(Track t) {
+        Call<Track> call = api.saveTrack(t);
+
+        call.enqueue(new Callback<Track>() {
             @EverythingIsNonNull
             @Override
-            public void onResponse(Call<Post> call, Response<Post> response) {
+            public void onResponse(Call<Track> call, Response<Track> response) {
 
                 if(!response.isSuccessful()) {
                     Toast toast = Toast.makeText(getApplicationContext(),
@@ -208,57 +182,106 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                int size_recycler = mAdapter.getItemCount();
+                Track newTrack = response.body();
 
-                Post newPost = response.body();
+                trackList.add(newTrack);
 
-                postList.add(newPost);
-
-                recyclerView.getAdapter().notifyItemInserted(postList.size());
-                recyclerView.smoothScrollToPosition(postList.size());
+                recyclerView.getAdapter().notifyItemInserted(trackList.size()-1);
+                recyclerView.smoothScrollToPosition(trackList.size());
             }
            @EverythingIsNonNull
             @Override
-            public void onFailure(Call<Post> call, Throwable t) {
+            public void onFailure(Call<Track> call, Throwable t) {
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "Unable to submit post to API.",
                         Toast.LENGTH_SHORT);
                 toast.show();
             }
         });
-    }*/
+    }
 
-    /*public void updatePost(int id_path, final int id, final String title) {
-        Call<Post> call = api.updatePost(id_path,id,title);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        call.enqueue(new Callback<Post>() {
+        if (requestCode == 1) {
+            if (resultCode == MainActivity.RESULT_OK) {
+                String id = data.getStringExtra("identifier");
+                String title = data.getStringExtra("title");
+                String singer = data.getStringExtra("singer");
+
+                Track posted_track = new Track(id, title, singer);
+                saveTrack(posted_track);
+            }
+            if (resultCode == MainActivity.RESULT_CANCELED) {
+                //Write your code if there's no result
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Post cancelled",
+                        Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+    }
+
+    public void updateTrack(final Track t) {
+        Call<Track> call = api.updateTrack(t);
+
+        call.enqueue(new Callback<Track>() {
             @EverythingIsNonNull
             @Override
-            public void onResponse(Call<Post> call, Response<Post> response) {
+            public void onResponse(Call<Track> call, Response<Track> response) {
 
                 if(!response.isSuccessful()) {
+
                     return;
                 }
 
                 int position = 0;
-
-                for(int i=0;i<postList.size();i++){
-                    if(postList.get(i).getId()==id){
-                        postList.get(i).setTitle(title);
+                for(int i=0;i<trackList.size();i++){
+                    if(trackList.get(i).equals(t)){
                         position = i;
                     }
                 }
+
                 // define an adapter
                 recyclerView.getAdapter().notifyDataSetChanged();
                 recyclerView.smoothScrollToPosition(position);
             }
             @EverythingIsNonNull
             @Override
-            public void onFailure(Call<Post> call, Throwable t) {
-
+            public void onFailure(Call<Track> call, Throwable t) {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Unable to submit put to API.",
+                        Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
-    }*/
+    }
+
+    public void deleteTrack(final String id, final int position) {
+        Call<Void> call = api.deleteTrack(id);
+
+        call.enqueue(new Callback<Void>() {
+            @EverythingIsNonNull
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                if(!response.isSuccessful()) {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Error: "+response.code(),
+                            Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+
+                trackList.remove(position);
+                mAdapter.notifyItemRemoved(position);
+            }
+            @EverythingIsNonNull
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+            }
+        });
+    }
 
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {

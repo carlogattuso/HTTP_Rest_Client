@@ -94,36 +94,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             public void onClick(View v) {
 
                 Intent trackview = new Intent(activity.getApplicationContext(), TrackDetailsActivity.class);
-                trackview.putExtra("identifier",track.getId());
+                trackview.putExtra("id",track.getId());
                 trackview.putExtra("title",track.getTitle());
                 trackview.putExtra("singer",track.getSinger());
                 activity.startActivity(trackview);
             }
         });
     }
-
-    /*public void deletePost(final int id, final int position_to_remove) {
-        Call<Void> call = api.deletePost(id);
-
-        call.enqueue(new Callback<Void>() {
-            @EverythingIsNonNull
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-
-                if(!response.isSuccessful()) {
-                    remove(position_to_remove);
-                    return;
-                }
-
-                remove(position_to_remove);
-            }
-            @EverythingIsNonNull
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-
-            }
-        });
-    }*/
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
