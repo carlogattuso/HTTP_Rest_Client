@@ -75,6 +75,8 @@ public class TrackDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 intent_main.putExtra("id_delete",id);
+                intent_main.putExtra("title_delete",title);
+                intent_main.putExtra("singer_delete",singer);
                 startActivity(intent_main);
                 intent_main.removeExtra("id_delete");
             }

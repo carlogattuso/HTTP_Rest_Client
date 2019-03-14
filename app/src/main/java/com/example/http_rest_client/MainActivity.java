@@ -88,14 +88,14 @@ public class MainActivity extends AppCompatActivity {
             if(extras.getString("id_delete")!=null) {
 
                 final String value = extras.getString("id_delete");
-                String song_name;
-                String singer_name;
+                final String song_name = extras.getString("title_delete");
+                final String singer_name = extras.getString("singer_delete");
 
                 AlertDialog myQuittingDialogBox = new AlertDialog.Builder(this)
                         //set message, title, and icon
-                        .setTitle("Delete")
-                        .setMessage("Are you sure you want to Delete " + value + "?")
 
+                        .setTitle("Delete")
+                        .setMessage("Are you sure you want to delete " + song_name + "-" + singer_name + "?")
                         .setPositiveButton("Delete Track", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
@@ -113,6 +113,10 @@ public class MainActivity extends AppCompatActivity {
                         })
                         .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                Toast toast = Toast.makeText(getApplicationContext(),
+                                        "Delete cancelled",
+                                        Toast.LENGTH_SHORT);
+                                toast.show();
                                 dialog.dismiss();
                             }
                         })
