@@ -22,9 +22,8 @@ public interface Tracks_API {
     @POST("tracks")
     Call<Track> saveTrack(@Body Track track);
 
-    @PUT("tracks/{id}")
-    @FormUrlEncoded
-    Call<Track> updateTrack(@Body Track track);
+    @PUT("tracks")
+    Call<Void> updateTrack(@Body Track track);
 
     @DELETE("tracks/{id}")
     Call<Void> deleteTrack(@Path("id") String id);

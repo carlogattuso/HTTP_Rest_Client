@@ -26,8 +26,6 @@ android:orientation="vertical">
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
         android:text="@string/new_track_id"
         android:textColor="@color/colorAccent"
         android:textSize="24sp"
@@ -81,9 +79,11 @@ android:orientation="vertical">
 
     <Button
         android:id="@+id/new_track_post"
+        style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/new_track_post" />
+        android:text="@string/new_track_post"
+        android:textSize="18sp" />
 
 </LinearLayout>

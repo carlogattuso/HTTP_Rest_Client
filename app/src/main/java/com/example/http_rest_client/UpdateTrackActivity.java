@@ -51,6 +51,7 @@ public class UpdateTrackActivity extends AppCompatActivity {
         setContentView(R.layout.put_layout);
 
         final Intent track_details_intent = getIntent();
+        final Intent main_intent = new Intent(UpdateTrackActivity.this,MainActivity.class);
 
         final String id = track_details_intent.getStringExtra("id_edit");
 
@@ -61,10 +62,21 @@ public class UpdateTrackActivity extends AppCompatActivity {
         put.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "Vamos a editar "+id,
-                        Toast.LENGTH_SHORT);
+                String title_text = title.getText().toString();
+                String singer_text = singer.getText().toString();
 
+                if (title_text.equals("")||singer_text.equals("")) {
+                    Toast.makeText(UpdateTrackActivity.this, "Empty field/s",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    main_intent.putExtra("id_edit", id);
+                    main_intent.putExtra("title_edit", title_text);
+                    main_intent.putExtra("singer_edit", singer_text);
+                    startActivity(main_intent);
+                    main_intent.removeExtra("id_edit");
+                    main_intent.removeExtra("title_edit");
+                    main_intent.removeExtra("singer_edit");
+                }
             }
         });
     }

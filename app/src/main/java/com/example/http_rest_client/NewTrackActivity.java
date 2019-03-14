@@ -60,11 +60,20 @@ public class NewTrackActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                returnIntent.putExtra("identifier",id.getText().toString());
-                returnIntent.putExtra("title",title.getText().toString());
-                returnIntent.putExtra("singer",singer.getText().toString());
-                setResult(NewTrackActivity.RESULT_OK,returnIntent);
-                finish();
+                String id_text = id.getText().toString();
+                String title_text = title.getText().toString();
+                String singer_text = singer.getText().toString();
+
+                if (title_text.equals("")||id_text.equals("")||singer_text.equals("")) {
+                    Toast.makeText(NewTrackActivity.this, "Empty field/s",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    returnIntent.putExtra("identifier",id_text);
+                    returnIntent.putExtra("title",title_text);
+                    returnIntent.putExtra("singer",singer_text);
+                    setResult(NewTrackActivity.RESULT_OK,returnIntent);
+                    finish();
+                }
             }
         });
 

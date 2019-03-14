@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     // use a linear layout manager
     private RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-    private List<Track> trackList;
+    private List<Track> trackList = new ArrayList<>();
     private RecyclerView recyclerView;
 
     @Override
@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
                                 deleteTrack(value,position);
                                 dialog.dismiss();
                             }
-
                         })
                         .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -127,14 +126,45 @@ public class MainActivity extends AppCompatActivity {
                 //The key argument here must match that used in the other activity
             }
             if(extras.getString("id_edit")!=null) {
-                String value = extras.getString("id_edit");
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "Vamos a editar "+value,
-                        Toast.LENGTH_SHORT);
-                toast.show();
+
+                final String value = extras.getString("id_edit");
+                final String song_name = extras.getString("title_edit");
+                final String singer_name = extras.getString("singer_edit");
+
+                AlertDialog myUpdatingDialogBox = new AlertDialog.Builder(this)
+                        //set message, title, and icon
+
+                        .setTitle("Update")
+                        .setMessage("Are you sure you want to update ?")
+                        .setPositiveButton("Update Track", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                //your deleting code
+                                int position = 0;
+                                for(int i=0;i<trackList.size();i++){
+                                    if(trackList.get(i).getId().equals(value)){
+                                        position = i;
+                                    }
+                                }
+                                Track t = new Track(value,song_name,singer_name);
+                                updateTrack(t,position);
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast toast = Toast.makeText(getApplicationContext(),
+                                        "Delete cancelled",
+                                        Toast.LENGTH_SHORT);
+                                toast.show();
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+
+                myUpdatingDialogBox.create();
+                myUpdatingDialogBox.show();
                 //The key argument here must match that used in the other activity
-                Intent i = new Intent(MainActivity.this, UpdateTrackActivity.class);
-                startActivityForResult(i, 1);
             }
         }
     }
@@ -226,33 +256,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void updateTrack(final Track t) {
-        Call<Track> call = api.updateTrack(t);
+    public void updateTrack(final Track t, final int position) {
+        Call<Void> call = api.updateTrack(t);
 
-        call.enqueue(new Callback<Track>() {
+        call.enqueue(new Callback<Void>() {
             @EverythingIsNonNull
             @Override
-            public void onResponse(Call<Track> call, Response<Track> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
 
                 if(!response.isSuccessful()) {
-
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            response.code(),
+                            Toast.LENGTH_SHORT);
+                    toast.show();
                     return;
                 }
 
-                int position = 0;
-                for(int i=0;i<trackList.size();i++){
-                    if(trackList.get(i).equals(t)){
-                        position = i;
-                    }
-                }
+                trackList.get(position).setTitle(t.getTitle());
+                trackList.get(position).setSinger(t.getSinger());
 
                 // define an adapter
-                recyclerView.getAdapter().notifyDataSetChanged();
+                recyclerView.getAdapter().notifyItemChanged(position);
                 recyclerView.smoothScrollToPosition(position);
             }
             @EverythingIsNonNull
             @Override
-            public void onFailure(Call<Track> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "Unable to submit put to API.",
                         Toast.LENGTH_SHORT);
@@ -283,182 +312,11 @@ public class MainActivity extends AppCompatActivity {
             @EverythingIsNonNull
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Unable to submit delete to API.",
+                        Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
     }
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.new_post) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            View view = LayoutInflater.from(this).inflate(R.layout.post_layout, null);
-            final AppCompatEditText input = (AppCompatEditText) view.findViewById(R.id.editText);
-            final TextView id_text = (TextView) view.findViewById(R.id.text_id);
-            if (postList.size() == 0) {
-                id_text.append(" ");
-                id_text.append(String.valueOf(26));
-            }
-            else {
-                id_text.append(" ");
-                id_text.append(String.valueOf(postList.get(postList.size()-1).getId()+1));
-            }
-            builder.setView(view);
-            builder.setPositiveButton("POST",
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    });
-            builder.setNegativeButton("CANCEL",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    });
-
-            final AlertDialog dialog = builder.create();
-            dialog.show();
-
-            //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    Boolean wantToCloseDialog = false;
-
-                    //Do stuff, possibly set wantToCloseDialog to true then...
-                    String title = input.getText().toString();
-                    if(title.equals("")) {
-                        Toast.makeText(MainActivity.this, "Empty title" + input.getText().toString(),
-                                Toast.LENGTH_LONG).show();
-                    }
-                    else {
-                        if (postList.size() == 0) {
-                            sendPost(26, input.getText().toString());
-                            wantToCloseDialog=true;
-                        }
-                        else {
-                            sendPost(postList.get(postList.size()-1).getId()+1, input.getText().toString());
-                            wantToCloseDialog=true;
-                        }
-                    }
-                    if(wantToCloseDialog)
-                        dialog.dismiss();
-                }
-            });
-
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    Toast.makeText(MainActivity.this, "Cancelled" + input.getText().toString(),
-                            Toast.LENGTH_LONG).show();
-                    dialog.dismiss();
-                }
-            });
-        }
-        if(id == R.id.modify_post){
-            if(postList.size()==0){
-                Toast.makeText(MainActivity.this, "No posts to modify",
-                        Toast.LENGTH_LONG).show();
-            }
-            else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                View view = LayoutInflater.from(this).inflate(R.layout.put_layout, null);
-                final AppCompatEditText input = (AppCompatEditText) view.findViewById(R.id.editText_modify);
-                final AppCompatEditText input_id = (AppCompatEditText) view.findViewById(R.id.editText_id);
-
-                builder.setView(view);
-                builder.setPositiveButton("PUT",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-                builder.setNegativeButton("CANCEL",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-
-                final AlertDialog dialog = builder.create();
-                dialog.show();
-
-                //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        Boolean wantToCloseDialog = false;
-
-                        //Do stuff, possibly set wantToCloseDialog to true then...
-                        String title = input.getText().toString();
-                        String id_string = input_id.getText().toString();
-
-                        if (title.equals("")&&id_string.equals("")) {
-                            Toast.makeText(MainActivity.this, "Empty title and ID",
-                                    Toast.LENGTH_LONG).show();
-                        } else if (title.equals("")) {
-                            Toast.makeText(MainActivity.this, "Empty title",
-                                    Toast.LENGTH_LONG).show();
-                        } else if (id_string.equals("")) {
-                            Toast.makeText(MainActivity.this, "Empty ID",
-                                    Toast.LENGTH_LONG).show();
-                        } else {
-                            try {
-                                int id_put = Integer.parseInt(id_string);
-                                Boolean found = false;
-                                for (Post p : postList) {
-                                    if (p.getId() == id_put) found = true;
-                                }
-                                if (found) {
-                                    updatePost(id_put, id_put, title);
-                                    wantToCloseDialog = true;
-                                }
-                                else{
-                                    Toast.makeText(MainActivity.this, "Non-existent identifier",
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            }
-                            catch (NumberFormatException e){
-                                Toast.makeText(MainActivity.this, "ID has to be an Integer",
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        }
-                        if (wantToCloseDialog)
-                            dialog.dismiss();
-                    }
-                });
-
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(MainActivity.this, "Cancelled",
-                                Toast.LENGTH_LONG).show();
-                        dialog.dismiss();
-                    }
-                });
-            }
-
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 }

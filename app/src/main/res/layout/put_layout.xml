@@ -61,9 +61,11 @@
 
     <Button
         android:id="@+id/update_track_put"
+        style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/update_track_put" />
+        android:text="@string/update_track_put"
+        android:textSize="18sp" />
 
 </LinearLayout>

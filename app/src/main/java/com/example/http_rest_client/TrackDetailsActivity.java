@@ -79,6 +79,9 @@ public class TrackDetailsActivity extends AppCompatActivity {
                 intent_main.putExtra("singer_delete",singer);
                 startActivity(intent_main);
                 intent_main.removeExtra("id_delete");
+                intent_main.removeExtra("title_delete");
+                intent_main.removeExtra("singer_delete");
+
             }
         });
         edit_button.setOnClickListener(new View.OnClickListener() {
