@@ -45,10 +45,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.internal.EverythingIsNonNull;
 
 public class UpdateTrackActivity extends AppCompatActivity {
+
+    private Tracks_API api;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.put_layout);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://147.83.7.203:8080/dsaApp/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        api = retrofit.create(Tracks_API.class);
 
         final Intent track_details_intent = getIntent();
         final Intent main_intent = new Intent(UpdateTrackActivity.this,MainActivity.class);
@@ -62,21 +72,69 @@ public class UpdateTrackActivity extends AppCompatActivity {
         put.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String title_text = title.getText().toString();
-                String singer_text = singer.getText().toString();
+                final String title_text = title.getText().toString();
+                final String singer_text = singer.getText().toString();
 
                 if (title_text.equals("")||singer_text.equals("")) {
                     Toast.makeText(UpdateTrackActivity.this, "Empty field/s",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    main_intent.putExtra("id_edit", id);
-                    main_intent.putExtra("title_edit", title_text);
-                    main_intent.putExtra("singer_edit", singer_text);
-                    startActivity(main_intent);
-                    main_intent.removeExtra("id_edit");
-                    main_intent.removeExtra("title_edit");
-                    main_intent.removeExtra("singer_edit");
+                    AlertDialog myUpdatingDialogBox = new AlertDialog.Builder(UpdateTrackActivity.this)
+                            //set message, title, and icon
+
+                            .setTitle("Update")
+                            .setMessage("Are you sure you want to update ?")
+                            .setPositiveButton("Update Track", new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    //your deleting code
+                                    Track t = new Track(id,title_text,singer_text);
+                                    updateTrack(t);
+                                    dialog.dismiss();
+                                    startActivity(main_intent);
+                                }
+                            })
+                            .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast toast = Toast.makeText(getApplicationContext(),
+                                            "Delete cancelled",
+                                            Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    dialog.dismiss();
+                                }
+                            })
+                            .create();
+
+                    myUpdatingDialogBox.create();
+                    myUpdatingDialogBox.show();
                 }
+            }
+        });
+    }
+
+    public void updateTrack(final Track t) {
+        Call<Void> call = api.updateTrack(t);
+
+        call.enqueue(new Callback<Void>() {
+            @EverythingIsNonNull
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                if(!response.isSuccessful()) {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            response.code(),
+                            Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+            }
+            @EverythingIsNonNull
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Unable to submit put to API.",
+                        Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
     }

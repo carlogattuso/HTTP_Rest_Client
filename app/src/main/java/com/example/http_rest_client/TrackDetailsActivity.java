@@ -45,10 +45,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.internal.EverythingIsNonNull;
 
 public class TrackDetailsActivity extends AppCompatActivity {
+
+    private Tracks_API api;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_track_layout);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://147.83.7.203:8080/dsaApp/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        api = retrofit.create(Tracks_API.class);
 
         final Intent adapter_intent = getIntent();
 
@@ -59,7 +69,7 @@ public class TrackDetailsActivity extends AppCompatActivity {
         final Intent intent_main = new Intent(TrackDetailsActivity.this,MainActivity.class);
         final Intent update_intent = new Intent(TrackDetailsActivity.this,UpdateTrackActivity.class);
 
-        TextView id_text = (TextView) findViewById(R.id.view_track_id_field);
+        final TextView id_text = (TextView) findViewById(R.id.view_track_id_field);
         TextView title_text = (TextView) findViewById(R.id.view_track_title_field);
         TextView singer_text = (TextView) findViewById(R.id.view_track_singer_field);
 
@@ -74,14 +84,34 @@ public class TrackDetailsActivity extends AppCompatActivity {
         delete_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent_main.putExtra("id_delete",id);
-                intent_main.putExtra("title_delete",title);
-                intent_main.putExtra("singer_delete",singer);
-                startActivity(intent_main);
-                intent_main.removeExtra("id_delete");
-                intent_main.removeExtra("title_delete");
-                intent_main.removeExtra("singer_delete");
 
+                AlertDialog myQuittingDialogBox = new AlertDialog.Builder(TrackDetailsActivity.this)
+                        //set message, title, and icon
+
+                        .setTitle("Delete")
+                        .setMessage("Are you sure you want to delete " + title + "-" + singer + "?")
+                        .setPositiveButton("Delete Track", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                //your deleting code
+                                deleteTrack(id);
+                                dialog.dismiss();
+                                startActivity(intent_main);
+                            }
+                        })
+                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast toast = Toast.makeText(getApplicationContext(),
+                                        "Delete cancelled",
+                                        Toast.LENGTH_SHORT);
+                                toast.show();
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+
+                myQuittingDialogBox.create();
+                myQuittingDialogBox.show();
             }
         });
         edit_button.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +119,33 @@ public class TrackDetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 update_intent.putExtra("id_edit",id);
                 startActivity(update_intent);
+            }
+        });
+    }
+
+    public void deleteTrack(final String id) {
+        Call<Void> call = api.deleteTrack(id);
+
+        call.enqueue(new Callback<Void>() {
+            @EverythingIsNonNull
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                if(!response.isSuccessful()) {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Error: "+response.code(),
+                            Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+            }
+            @EverythingIsNonNull
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Unable to submit delete to API.",
+                        Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
     }

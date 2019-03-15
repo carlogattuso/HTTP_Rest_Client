@@ -45,17 +45,26 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.internal.EverythingIsNonNull;
 
 public class NewTrackActivity extends AppCompatActivity {
+
+    private Tracks_API api;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_layout);
 
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://147.83.7.203:8080/dsaApp/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        api = retrofit.create(Tracks_API.class);
+
         Button send = (Button) findViewById(R.id.new_track_post);
         final EditText id = (EditText) findViewById(R.id.new_track_id_field);
         final EditText title = (EditText) findViewById(R.id.new_track_title_field);
         final EditText singer = (EditText) findViewById(R.id.new_track_singer_field);
-
-        final Intent returnIntent = new Intent();
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,17 +77,39 @@ public class NewTrackActivity extends AppCompatActivity {
                     Toast.makeText(NewTrackActivity.this, "Empty field/s",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    returnIntent.putExtra("identifier",id_text);
-                    returnIntent.putExtra("title",title_text);
-                    returnIntent.putExtra("singer",singer_text);
-                    setResult(NewTrackActivity.RESULT_OK,returnIntent);
-                    finish();
+                    Track t = new Track(id_text,title_text,singer_text);
+                    saveTrack(t);
+                    Intent intent = new Intent(NewTrackActivity.this,MainActivity.class);
+                    startActivity(intent);
                 }
             }
         });
+    }
 
-        /*Intent returnIntent = new Intent();
-        setResult(Activity.RESULT_CANCELED, returnIntent);
-        finish();*/
+    public void saveTrack(Track t) {
+        Call<Track> call = api.saveTrack(t);
+
+        call.enqueue(new Callback<Track>() {
+            @EverythingIsNonNull
+            @Override
+            public void onResponse(Call<Track> call, Response<Track> response) {
+
+                if(!response.isSuccessful()) {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Error: "+response.code(),
+                            Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+            }
+            @EverythingIsNonNull
+            @Override
+            public void onFailure(Call<Track> call, Throwable t) {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Unable to submit post to API.",
+                        Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
     }
 }
