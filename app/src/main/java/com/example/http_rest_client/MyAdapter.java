@@ -40,7 +40,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public TextView title;
         public TextView id;
         public View layout;
-        public  Button image;
+        public Button image;
 
         public ViewHolder(View v) {
             super(v);

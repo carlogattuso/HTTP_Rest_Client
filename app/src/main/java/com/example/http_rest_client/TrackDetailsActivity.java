@@ -54,7 +54,7 @@ public class TrackDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.view_track_layout);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://147.83.7.203:8080/dsaApp/")
+                .baseUrl("http://10.192.220.45:8080/dsaApp/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
